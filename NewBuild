@@ -1,0 +1,31 @@
+#!/bin/bash
+echo "Choose the installation Mathod : 
+      1 : Clean Instllation (empty DB) 
+      2 : Regular Upgrade (Migrate all DB)"
+read method
+echo  -e "\e[7mInsert Link To New Build : \e[27m"
+read link
+wget $link
+echo -e  "\e[7mUnziping Sonar Build \e[27m"
+unzip Sonar_output.zip
+echo -e "\e[7mTaking Down Sonar Dockers \e[27m"
+docker-compose -f sonar-publish/docker-compose.yml down
+echo -e "\e[7mMoving Sonar Folder To /home/harmonic And Removing Irelevant Folders/Files \e[27m"
+mv /home/harmonic/sonar-publish /home/harmonic/sonar-publish_$(date +%d-%m-%Y_%I:%M)
+mv Sonar/output/sonar-publish/ /home/harmonic/
+rm -rf Sonar/output/
+rm Sonar_output.zip
+if [[ $method -eq 1 ]] 
+then 
+echo -e "\e[7mCleaning The DB \e[27m"
+rm -rf Sonar/DBs/*
+rm -rf Sonar/logs/*
+echo -e "\e[7mStarting Sonar With New And Clean DB \e[27m"
+docker-compose -f sonar-publish/docker-compose.yml up --build --force-recreate --renew-anon-volumes  -d
+elif [[ $method -eq 2 ]]
+then 
+echo -e "\e[7mStarting Sonar With Old DB \e[27m"
+docker-compose -f sonar-publish/docker-compose.yml up --build -d 
+fi
+echo -e "\e[7mRemoving Old Unused Images \e[27m"
+docker image prune -f

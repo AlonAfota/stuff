@@ -1,0 +1,63 @@
+#!/bin/bash
+
+
+echo "choose the device you want to connect to : 
+	1 : HVS-118 
+      	2 : HVS-213	
+	3 : Sonar-server.194
+	4 : Sonar-server.172 
+	5 : Sonar-server 32.22
+	6 : DHCP server
+	7 : QA Lab Link server
+	8 : Iperf of HVS-118
+	9 : Iperf NSI Side (speed test server)"
+
+konsole=$(qdbus org.kde.konsole*)
+read device
+if [[ $device == 1 ]];then 
+echo "ssh to HVS-118"
+qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "HVS-118"
+ssh ccap@10.40.22.169 -p2022
+
+elif [[ $device == 2 ]];then
+echo "ssh to HVS-213"
+qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "HVS-213"
+ssh ccap@10.40.26.192 -p2022
+
+elif [[ $device == 3 ]];then
+echo "ssh to sonar 194"
+qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "10.40.26.194"
+ssh -t root@10.40.26.194 "cd /home/harmonic/; bash"
+
+elif [[ $device == 4 ]];then
+echo "ssh to sonar 172"
+qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "10.40.26.172"
+ssh -t root@10.40.26.172 "cd /home/harmonic/; bash"
+
+elif [[ $device == 5 ]];then
+	qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "10.40.32.22"
+	echo "ssh to sonar 10.40.32.22"
+	ssh harmonic@10.40.32.22
+
+elif [[ $device == 6 ]];then 
+	qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "DHCP-5.231"
+	echo "ssh to DHCP 10.40.5.231"
+	ssh admin@10.40.5.231
+
+elif [[ $device == 7 ]];then 
+	qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "Lab-Link"
+	echo "ssh to QA-Lab Link 10.40.32.23"
+	ssh harmonic@10.40.32.23
+
+elif [[ $device == 8 ]];then 
+	qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "Iperf of HVS-118"
+	echo "ssh to Iperf server 10.40.32.220"
+	ssh harmonic@10.40.32.220
+
+elif [[ $device == 9 ]];then 
+	qdbus $konsole $KONSOLE_DBUS_SESSION setTitle 1 "Iperf NSI side"
+	echo "ssh to Iperf NSI side 10.40.22.25"
+	ssh harmonic@10.40.22.25
+
+fi
+
